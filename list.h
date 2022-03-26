@@ -1,11 +1,12 @@
-#ifndef List_h
-#define List_h
-#include "list.c"
+#ifndef LIST_H
+#define LIST_H
 
 typedef struct List List;
+typedef struct Biblioteca;
+typedef struct Reproduccion;
+typedef struct Cancion;
 
-List * createList(void);
+//const char *get_csv_field(char *, int);
+//void GuardarCanciones(FILE *, Biblioteca *);
 
-const char *get_csv_field (char *, int);
-
-#endif /* List_h */
+#endif
