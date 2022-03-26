@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "list.h"
 
+
 typedef struct{
     int cantidad;
     char nombre[8];
@@ -20,7 +21,8 @@ typedef struct{
     Reproduccion *listaDeListas;
 } Cancion;
 
-/void GuardarCanciones(FILE *archivo, Biblioteca *lista){
+/*
+void GuardarCanciones(FILE *archivo, Biblioteca *lista){
     char linea[1024];
     int i;
 
@@ -72,4 +74,4 @@ const char *get_csv_field (char *tmp, int k){
        return ret;
     }
     return NULL;
-}
+}*/
