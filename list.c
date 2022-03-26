@@ -1,77 +1,130 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 #include "list.h"
 
-
-typedef struct{
-    int cantidad;
-    char nombre[8];
-} Reproduccion;
-
-typedef struct{
-    int cantidad;
-    Reproduccion *lista;
-} Biblioteca;
-
-typedef struct{
-    char *Nombre;
-    char *Artista;
-    char **genero;
-    int year;
-    Reproduccion *listaDeListas;
-} Cancion;
-
-/*
-void GuardarCanciones(FILE *archivo, Biblioteca *lista){
-    char linea[1024];
-    int i;
-
-    fgets(linea, 1023, archivo);
-    int k = 0;
-
-    while(fgets(linea,1023,archivo) != NULL){
-        for(i = 0; i < 13; i++){
-            char *aux = get_csv_field(linea, i);
-            printf("%s ",aux);
-        }
-        printf("\n");
-        k++;
-        if(k == 10) break;
-    }
+Node * createNode(void * data) {
+    Node * new = (Node *)malloc(sizeof(Node));
+    assert(new != NULL);
+    new->data = data;
+    new->prev = NULL;
+    new->next = NULL;
+    return new;
 }
 
-const char *get_csv_field (char *tmp, int k){
-    int open_mark = 0;
-    char *ret = (char*) malloc (100 * sizeof(char));
-    int ini_i = 0, i = 0, j = 0;
-    while(tmp[i + 1] != '\0'){
+List * createList() {
+     List * new = (List *)malloc(sizeof(List));
+     assert(new != NULL);
+     new->head = new->tail = new->current = NULL;
+     return new;
+}
 
-        if(tmp[i] == '\"'){
-            open_mark = 1 - open_mark;
-            if(open_mark) ini_i = i + 1;
-            i++;
-            continue;
-        }
+void * firstList(List * list) {
+    if (list == NULL || list->head == NULL) return NULL;
+    list->current = list->head;
+    return (void *)list->current->data;
+}
 
-        if(open_mark || tmp[i] != ','){
-            if(k == j) ret[i - ini_i] = tmp[i];
-            i++;
-            continue;
-        }
+void * nextList(List * list) {
+    if (list == NULL || list->head == NULL || list->current == NULL || list->current->next == NULL) return NULL;
+    list->current = list->current->next;
+    return (void *)list->current->data;
+}
 
-        if(tmp[i] == ','){
-            if(k == j) {
-               ret[i - ini_i] = 0;
-               return ret;
-            }
-            j++; 
-            ini_i = i + 1;
-        }
-        i++;
+void * lastList(List * list) {
+    if (list == NULL || list->head == NULL) return NULL;
+    list->current = list->tail;
+    return (void *)list->current->data;
+}
+
+void * prevList(List * list) {
+    if (list == NULL || list->head == NULL || list->current == NULL || list->current->prev == NULL) return NULL;
+    list->current = list->current->prev;
+    return (void *)list->current->data;
+}
+
+void pushFront(List * list, void * data) {
+    assert(list != NULL);
+    
+    Node * new = createNode(data);
+    
+    if (list->head == NULL) {
+        list->tail = new;
+    } else {
+        new->next = list->head;
+        list->head->prev = new;
     }
-    if(k == j) {
-       ret[i - ini_i] = 0;
-       return ret;
+    
+    list->head = new;
+}
+
+void pushBack(List * list, void * data) {
+    list->current = list->tail;
+    if(list->current==NULL) pushFront(list,data);
+    else pushCurrent(list,data);
+}
+
+void pushCurrent(List * list, void * data) {
+    assert(list != NULL && list->current !=NULL);
+    Node * new = createNode(data);
+
+    if(list->current->next)
+        new->next = list->current->next;
+    new->prev = list->current;
+
+    if(list->current->next)
+        list->current->next->prev = new;
+    list->current->next = new;
+
+    if(list->current==list->tail)
+        list->tail=new;
+
+}
+
+void * popFront(List * list) {
+    list->current = list->head;
+    return popCurrent(list);
+}
+
+void * popBack(List * list) {
+    list->current = list->tail;
+    return popCurrent(list);
+}
+
+void * popCurrent(List * list) {
+    assert(list != NULL || list->head != NULL);
+    
+    if (list->current == NULL) return NULL;
+    
+    Node * aux = list->current;
+    
+    if (aux->next != NULL) 
+        aux->next->prev = aux->prev;
+    
+    
+    if (aux->prev != NULL) 
+        aux->prev->next = aux->next;
+    
+    
+    void * data = (void *)aux->data;
+    
+    if(list->current == list->tail)
+        list->tail = list->current->prev;
+
+    if(list->current == list->head)
+        list->head = list->current->next;
+        
+    list->current = aux->prev;
+
+    free(aux);
+    
+    return data;
+}
+
+void cleanList(List * list) {
+    assert(list != NULL);
+    
+    while (list->head != NULL) {
+        popFront(list);
     }
-    return NULL;
-}*/
+}   
