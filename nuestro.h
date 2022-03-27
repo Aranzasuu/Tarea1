@@ -19,6 +19,6 @@ typedef struct{
     Reproduccion *listaDeListas;
 } Cancion;
 
-void GuardarCanciones(FILE *, Biblioteca *);
+char *get_csv_field (char *, int);
 
 #endif

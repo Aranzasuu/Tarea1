@@ -39,6 +39,6 @@ void * popCurrent(List * list);
 
 void cleanList(List * list);
 
-const char *get_csv_field (char *, int);
+char *get_csv_field (char *, int);
 
 #endif
